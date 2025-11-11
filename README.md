@@ -124,3 +124,23 @@ We took a preventive approach by adding a fake Antenna diode next to every cell 
 
 
 * OpenLANE Directory Structure
+Open the OpenLANE and open the working directory: 
+
+  /Desktop/work/tools/openlane_working_dir/openlane
+
+  docker
+
+  ./flow.tcl -interactive : This command is used to run the complete flow of RTL to GDS step by step.
+
+  This opens the prompt of openlane. Now we have to input all the packages which required to run the flow.
+
+  package require openlane 0.9
+
+  prep -design picorv32a : This command is used to prepare the design stage.
+
+  This preparation stage created the runs folder in the picorv32a. This command also contain the config.tcl file which contain the all the defaults value. Design folder in the openlane directory also contains the config.tcl, src where we find the verilog file and sdc file. This config.tcl contains the every details about the design like the clock period, clock period port etc.
+
+In openlane default value is fixed, then in the config.tcl and then in sky130_fd_hd_config.tcl. Highest priority is gien to sky130 config.tcl file
+
+  
+  
