@@ -388,13 +388,132 @@ For above metals again depoist SiO2 and do CMP. Mask 14 is used to create the co
 <img width="1227" height="845" alt="Screenshot 2025-11-10 210632" src="https://github.com/user-attachments/assets/044d253f-e6ad-4b62-bba5-5d24295a4fe5" />
 <img width="1275" height="1025" alt="Screenshot 2025-11-10 210728" src="https://github.com/user-attachments/assets/5e5c45b7-c852-4ff9-87d9-e3a45415afb8" />
 
+* Lab Introduction to Sky130 basic layout and LEF using inverter
+
+given the inverter where the gate of pmos and nmos are connected to gate and the the drain is connv=ceted to the output. Metal 1 layer is the first local interconnect layer which is of purple color and the metal 2 layer is pink color. Nmwell is the solid dash line and the N diffuisin area is of green line and P-diffusion area is of brown color, whereas polysisilicon is of red color.
+<img width="456" height="586" alt="unnamed" src="https://github.com/user-attachments/assets/a90d37de-052b-4115-aa4b-dd55c1228a5f" />
+<img width="516" height="752" alt="unnamed" src="https://github.com/user-attachments/assets/ae3e0957-a35b-4493-9e1c-ee95448f7b45" />
+<img width="717" height="763" alt="unnamed" src="https://github.com/user-attachments/assets/62c3137a-48a1-45fa-8f18-10c0e17026c4" />
+<img width="427" height="705" alt="unnamed" src="https://github.com/user-attachments/assets/cf6e691d-0d72-4bb7-a27d-6aa468456ba2" />
 
 
 
+* Lab steps to create standard cell layout and extract spice netlist
 
+<img width="516" height="752" alt="unnamed" src="https://github.com/user-attachments/assets/1dca6a6d-1161-4424-ae61-745ceeef1cc0" />
 
+Extraction file: 
+<img width="722" height="222" alt="unnamed" src="https://github.com/user-attachments/assets/79be00d4-841d-483d-838c-f7fae68cbc1f" />
+<img width="671" height="129" alt="unnamed" src="https://github.com/user-attachments/assets/200c8a9d-3674-469a-b63e-8a2bc2e33f94" />
+<img width="730" height="444" alt="unnamed" src="https://github.com/user-attachments/assets/a5ff67ee-2c41-4ac4-80d5-ceadbaff29cd" />
 
+* Lab steps to create final SPICE deck using sky130 tech
+Edit the extracted spice file by adding:
+ .include ./libs/pshort.lib and .include ./libs/nshort.lib command.
 
+And then set the supply voltage "VDD" to 3.3v by VDD VPWR 0 3.3V command. and similarly set the value of VSS also.
+
+Now, we need to specify the input files. by Va A VGND PULSE(0V 3.3V 0 0.1ns 2ns 4ns).
+
+Also add the command for the analysis like, .tran 1n 20n, .control , run,.endc,.end.
+<img width="744" height="477" alt="unnamed" src="https://github.com/user-attachments/assets/f8a18d46-461b-40f1-ba83-88c394a08c7e" />
+
+ After this see the ngspice and plot y vs time a. 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8416d8b0-3b39-49b1-bcda-7371e89a0d71" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8a6bfb63-6d4b-4971-8f9d-b7d9c1f07a8a" />
+
+Now if we increase the C3 value from 0.024ff to 2ff the graph will look like this, graph become more smoother.
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/38f64735-bdba-49f1-a7ce-c6e85ad1766d" />
+
+* Lab steps to characterize inverter using sky130 model files
+
+We need to calcualte the 4 parameters:
+
+- Rise time: It is time taken to the output waveform to 20% value to 80% value.
+<img width="306" height="86" alt="image" src="https://github.com/user-attachments/assets/a8daba1e-99c0-48b4-881e-6fcfe81919d5" />
+so, rise time= (2.2489 - 2.1819)e-09 = 66.92 psec.
+
+- Fall time: It is the time take by output for transition from 80% to 20%.
+<img width="301" height="52" alt="image" src="https://github.com/user-attachments/assets/e8a5ab94-c6ce-4a5f-9c57-b0815b098b37" />
+
+Hence the fall time= (4.09512 - 4.05264)e-09 = 42.51 psec.
+
+-Propagation delay: It is the time difference between the 50% of input and 50% of the output.
+<img width="282" height="57" alt="image" src="https://github.com/user-attachments/assets/2ffc78fc-090a-4d6b-ae36-901ed69300e9" />
+so, propogation delay =(2.2106 - 2.15012)e-09 = 60.48 psec.
+
+-Cell fall delay: It is time for output falling to 50% and input is rising to 50%.
+<img width="276" height="52" alt="image" src="https://github.com/user-attachments/assets/2f83b37a-5fc7-4162-8857-750a37289594" />
+so, cell fall delay =(4.07735 - 4.04988)e-09 = 27.47 psec.
+
+* Lab introduction to Magic tool options and DRC rules
+To know more about the Magic DRC we can go to the website:- http://opencircuitdesign.com/magic/Technologyfiles/TheMagicTechnologyFileManual/DrcSection
+
+Link to Google_Skywaters Design Rules: - https://skywater-pdk.readthedocs.io/en/main/rules/periphery.html
+
+For reference , we can use the github repo of Google-Skywater: - https://github.com/google/skywater-pdk
+
+* Lab introduction to Sky130 pdk's and steps to download labs
+Follow the steps:
+
+First go to the home directory.
+
+-To download the lab files for performing DRC corrections:
+
+wget http://opencircuitdesign.com/open_pdks/archive/drc_tests.tgz
+
+-To extract the lab files from the downloaded file:
+
+tar xfz drc_tests.tgz
+
+Then go inside the lab folder drc_tests.
+
+To list all the directories, we can use the command ls -al.
+
+To view the .magicrc file, we can use the command gvim .magicrc. This file serves as the startup script for magic and tells it where to find the technology file. The technology file is already available locally in the same directory, so we can make changes to it if needed.
+
+To start the magic tool with better graphics, we can use the command magic -d XR &.
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/10ea3278-77d1-4f3b-af2b-d08f3043891f" />
+
+Content of .magicrc file by using command vi .magicrc
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/3b7499f1-55ed-43d3-b246-fa5f7b84644d" />
+
+* Lab introduction to Magic and steps to load Sky130 tech-rules
+Use the command magic -d XR : to open the magic tool. Open the met3.mag file from the file menu. we will see different layouts with different DRC values, called rule numbers.
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2c8a7766-3b1f-4f06-987e-37a5c2b5228c" />
+These rule number we can found at Google-Skywater documentation. Now we will select the any layout area and check drc why in tckon.
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/870a880a-f7b6-4d8b-9352-4ab135612739" />
+Next, select a blank area and hover the mouse pointer over the metal3 contact icon. Press the p button and type 'pek' in the tkcon. Then execute the command cif see VIA2 in the tkcon tab.
+
+we will see a bunch of black squares appear inside the area.
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/37f0df39-678d-4459-9484-af92d178bb9d" />
+
+* Lab exercise to fix poly.9 error in Sky130 tech-file
+Now, we will open the poly.mag file in the magic tool with the helo of the command load poly.mag in the tkcon terminal. consider the rule poly.9 then check the website for that particular rule. To find the error, we can look at the sky130A.tech file which is present in the drc_tests directory. we can open this file with the text editor of Linux itself.
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f48dad29-a6ca-4f1a-9609-82c9a11df056" />
+
+Search for 'poly.9' in the sky130A.tech file. It appears in both the POLY and uhrpoly sections, where the rules are not set properly. Add a change in both sections. After making changes to the sky130A.tech file, click on Save and close the editor file.
+
+Next, execute the command tech load sky130A.tech in the tkcon terminal. Then, run the drc
+
+*  Lab exercise to implement poly resistor spacing to diff and tap
+
+To correctly implement poly resistor spacing, we will need to make changes to the sky130A.tech file again.
+Now will execute in Tkon after saving.
+To check for errors, we can make a copy of the poly.9 model from the poly.mag file in the magic window.
+
+To find the description of a DRC error, we can select the area with the error in the magic window and then run the command drc why in the tkcon terminal.
+
+This will give a description of the error.
+
+* Lab challenge exercise to describe DRC error as geometrical construct
+Now we will make some changes in sky130A.tech file which are as follows:
+To find the nwell.6 model error, open the nwell.mag file in the magic tool. In the figure, the deep nwell is shown in yellow stripes and the nwell is shown in dotted green pattern.
+This error can be seen at the site as well.
+
+* Lab challenge to find missing or incorrect rules and fix them
+Now we will open the magic tool and execute the commands drc style drc(full) and drc check.
 
 ### DAY 4: Pre-layout timing analysis and importance of good clock tree. Timing modelling using delay tables.
 
@@ -448,15 +567,376 @@ Slack is defined as the difference between the data required time and data arriv
 Here the jitter and the uncertainity remains same as of setuo analysis. Here slack is defined as the difference between the data arrival time and the data required time.
 <img width="1745" height="926" alt="Screenshot 2025-11-11 063426" src="https://github.com/user-attachments/assets/dc6bddbc-c5f8-4867-bc17-5c619c9a6849" />
 
+* Lab steps to convert grid info to track info
+Now, we need to extract the '.lef' file from the '.mag' file to place it into the picorv32a flow.
+
+There are certain guidelines to follow while making standard cells:
+
+-The input and output ports must lie on the intersection of the vertical and horizontal tracks.
+
+-The width of the standard cell should be an odd multiple of the track pitch, and the height should be an odd multiple of the track vertical pitch.
+
+Now we can open the track file from pdk/sky130/libs.tech /openlane/sky130_fd_sc_hd/track.info to get more information on this.
+
+The track is used during the routing stage and is essentially a trace of metal layers such as metal 1, metal 2, etc.
+
+PNR is automated, so we need to specify where we want the routes to go. This specification is given by tracks. Each of the tracks is placed at (0.23, 0.46)um horizontally and (0.17, 0.34)um vertically for li1, metal 1, and metal 2 layers.
+
+In the layout, the ports are on the li1 layer. To ensure that the ports are on the intersection of the tracks, we will need to convert the grid into the tracks.
+To do this, we can first open the tracks file and then open the tkcon window and type the help grid command.
+Then again will write command according to the track file required.
+Now we can see that, the ports has been placed at the intersection of the tracks. But between the boundaries, 3 boxes are covered. so our second requirment also satisfies here.
+
+*Lab steps to convert magic layout to std cell LEF
+
+Now, we will need to decide on the port name and its values. we can set the values for different ports, and for the power and ground port, we will need to make changes in the 'attach to layer' as Metal1.,After these parameters are set once, we are ready to extract the lef file from the mag.
+
+Now, we open this file in the magic by the command:
+magic -T sky130A.tech sky130_vsdinv.mag &
+
+To extract the lef file we have to write the command in the tckon window as given below,
+lef write
+so it will create a lef file and we can check it in the vsdstdcellsdesign folder by using command ls -ltr
+
+*Introduction to timing libs and steps to include new cell in synthesis
+
+Now that the .lef file has been created, the next step is to plug this file into picorv32a. Before that, we will need to move the files to the src folder where all the design files are available at one location.
+To do this, we can copy the file using the cp command.
+this is how the library file looks like. We have different library files named as typical,slow ,fast. Now we will copy it to the src folder
+Here We need to modify the config.tcl file of picorv32a directory,So open the config.tcl file of picorv32a directory.
+
+OPENLANE :- Now we will go to the open lane directory and execute the docker command.
+
+Will Execute the following commands in a line
+
+./flow.tcl -interactive
+
+package require openlane 0.9
+
+prep -design picorv32a
+
+set lefs [glob $::env(DESIGN_DIR)/src/*.lef]      
+
+add_lefs -src $lefs
+
+run_synthesis
+
+* Lab steps to configure synthesis settings to fix slack and include vsdinv
+
+We will try to modify the parameters of our cell by referring the README.md file in the configuration folder in openlane directory
+
+The README.md file contains information about the parameters of the cell.
+We will give the following commmands in the terminal in openlane directory
+
+prep -design picorv32a -tag 01-04_12-54 -overwrite
+
+set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+
+add_lefs -src $lefs
+
+echo $::env(SYNTH_STRATEGY)
+
+set ::env(SYNTH_STRATEGY) "DELAY 3"
+
+echo $::env(SYNTH_BUFFERING)
+
+echo $::env(SYNTH_SIZING)
+
+set ::env(SYNTH_SIZING) 1
+
+echo $::env(SYNTH_DRIVING_CELL)
+
+run_synthesis
+
+prep -design picorv32a -tag 01-04_12-54 -overwrite is used to overwrite the existing files with previous values of simulations.
+
+After synthesis, we have observed that the slack is nagative.
+
+-wns(worst negative slack)= -23.89
+-tns(total negative slack)= -711.59.
+
+Now run_synthesis we will see chip area has incresed and the value of slack has reduced.
+Since synthesis of the picorv32a is successful, so we will run the floorplan using command run_floorplan. Since, we are getting the error so first again we have to do the synthesis using the commands mentioned earlier and then we will use following commands to do the floorplan,
+
+init_floorplan
+
+place_io
+
+tap_decap_or
 
 
+so now we are good to run the placement using command run_placement
+Here placement is succesfull now without any error. so,We will run the expand command in the tkcon window
 
+*Lab steps to configure OpenSTA for post-synth timing analysis
 
+We have do STA on the picorv32a design which had timing violations.First we will run the synthesis using the following commands in openlane directory
 
+docker
 
+./flow.tcl -interactive
 
+package require openlane 0.9
 
-### DAY 5: Fina steps for RTL to GDS using Triton Route and OpenSTA
+prep -design picorv32a
+
+set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+
+add_lefs -src $lefs
+
+set ::env(SYNTH_SIZING) 1
+
+run_synthesis
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/08f47393-252d-477f-9888-1ba263e5c55b" />
+Now we have to make a new pre_sta.conf file. We can do this by vim editor or in simple text editor also.
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ea87d139-cce4-4dd5-8619-0a8531c1f25a" />
+Now we will create a my_base.sdc file which will have the definitions of environment variables.
+
+Now, we also need to create my_base.sdc file having the data shown in below image in openlane/designs/picorv32a/src directory
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/5c303ff7-e246-44be-ad67-005cfa76fd01" />
+Now will go to the openlane directory in a new terminal and execute the sta pre_sta.conf command.
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d37f6a65-ad1c-4fda-bd85-3ba3bc725773" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/7375c244-855f-4ec4-9754-da0e7dd4e1b3" />
+
+<img width="1920" height="1080" alt="319902308-146e218e-a4a5-4f37-9ca2-088d74eb5d99" src="https://github.com/user-attachments/assets/0c18f7c6-25eb-46ec-afd6-d1831a17b5be" />
+
+* Lab steps to optimize synthesis to reduce setup violations
+Now we will change the FANOUT parameter and again do the synthesis,
+
+prep -design picorv32a -tag 02-04_05-27 -overwrite
+
+set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+
+add_lefs -src $lefs
+
+set ::env(SYNTH_SIZING) 1
+
+set ::env(SYNTH_MAX_FANOUT) 4
+
+echo $::env(SYNTH_DRIVING_CELL)
+
+run_synthesis
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/93e66725-9209-41fd-801b-4f68c316347c" />
+Now, run the sta pre_sta.conf command in a new terminal in openlane directory itself,
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e77a09ea-f735-419e-a0e3-d27d98118d3d" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/96873054-c761-4c51-b482-e74b7e838f99" />
+
+* Lab steps to do basic timing ECO
+OR gate which has a drive strength of 2 is driving 4 fanout.
+<img width="923" height="151" alt="image" src="https://github.com/user-attachments/assets/ff260ca4-c545-48e3-bf62-6ecf9d97ff18" />
+So we have to replace this OR Gate with another OR Gate having Drive strength of 4 by executing the commands given below,
+
+-To Reports all the connections to a net
+
+report_net -connections _11672_
+
+-To Check the command syntax
+
+help replace_cell
+
+-To Replace the cell
+
+replace_cell _14510_ sky130_fd_sc_hd__or3_4
+
+-To Generate the custom timing report
+
+report_checks -fields {net cap slew input_pins} -digits 4
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9544791f-a8e9-4342-810e-937c8a87edbe" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cdfff422-9628-4d0f-80de-7928d8ec6747" />
+Now we can see theslack has been reduced from -23.89 to -23.51
+
+<img width="906" height="133" alt="image" src="https://github.com/user-attachments/assets/72af0043-67f5-439f-b326-21c161f6892d" />
+In above case also OR gate which has a drive strength of 2 is driving 4 fanout.
+
+So we have to place this OR Gate with another OR Gate having Drive strength of 4 by following these commands
+
+-To Reports all the connections to a net
+
+report_net -connections _11675_
+
+-To Replace the cell
+
+replace_cell _14514_ sky130_fd_sc_hd__or3_4
+
+-To Generate the custom timing report
+
+report_checks -fields {net cap slew input_pins} -digits 4
+
+*Lab steps to run CTS using Triton
+
+Now we need to replace the old netlist with newly generated netlist which has generated after reducing the slack. And then we will run floorplan , placement and CTS.
+So, we need to make a copy of this old netlist and then we will add the newly generated netlist to be used in our openlane flow for further process.
+
+So we will make the copy by following commands.
+
+-To go to the following location
+
+cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/02-04_05-27/results/synthesis/
+
+-To List the contents
+
+ls -ltr
+
+-To copy the netlist with particular name
+
+cp picorv32a.synthesis.v picorv32a.synthesis_old.v
+
+-To List the contents
+
+ls -ltr
+
+Now we will do synthesis again then floorplan , placement and cts in the openlane directory itself by the following commands,
+
+   prep -design picorv32a -tag 02-04_05-27 -overwrite
+   
+   set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+   
+   add_lefs -src $lefs
+   
+   set ::env(SYNTH_STRATEGY) "DELAY 3"
+   
+   set ::env(SYNTH_SIZING) 1
+   
+   run_synthesis
+   
+   init_floorplan
+   
+   place_io
+   
+   tap_decap_or
+   
+   run_placement
+
+    # Incase getting error will use this command
+   
+   unset ::env(LIB_CTS)
+
+   run_cts
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4e3b135a-febb-4c12-83ee-9bdab015a48b" />
+
+* Lab steps to verify CTS runs
+OPENROAD To create a database in OPENROAD using LEF and TMP files, we can use the following commands:
+
+- First, make sure we are in the directory where the LEF and TMP files are located.
+
+- Then, enter the following command to start the OPENROAD tool,
+
+openroad
+
+- Once you are in the OPENROAD tool, enter the following command to create the database,
+
+To Read lef file
+
+read_lef /openLANE_flow/designs/picorv32a/runs/02-04_05-27/tmp/merged.lef
+
+To Read def file
+
+read_def /openLANE_flow/designs/picorv32a/runs/02-04_05-27/results/cts/picorv32a.cts.def
+
+To Create an OpenROAD database file named pico_cts.db
+
+write_db pico_cts.db
+
+Now we can see this database file is present in openlane directory.
+
+* Lab steps to analyze timing with real clocks using OpenSTA
+Now we can execute the following commands,
+
+-To load the created db file in Openroad
+
+read_db pico_cts.db
+
+-To read the netlist post CTS
+
+read_verilog /openLANE_flow/designs/picorv32a/runs/02-04_05-27/results/synthesis/picorv32a.synthesis_cts.v
+
+-To read the library for design
+
+read_liberty $::env(LIB_SYNTH_COMPLETE)
+
+-To link the design and library
+
+link_design picorv32a
+
+-To read the custom sdc we have created
+
+read_sdc /openLANE_flow/designs/picorv32a/src/my_base.sdc
+
+-To setting all clocks as propagated clocks
+
+set_propagated_clock [all_clocks]
+
+-To Generate the custom timing report
+
+report_checks -path_delay min_max -fields {slew trans net cap input_pins} -format full_clock_expanded -digits 4
+
+-To exit from Openlane flow
+
+exit
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/7f8130b7-e3d6-49da-a73f-e67f1102703c" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/62155698-b635-4743-ac28-59daf50d70e3" />
+
+* Lab steps to execute OpenSTA with right timing libraries and CTS assignment
+-To remove sky130_fd_sc_hd__clkbuf_1 from the list
+
+set ::env(CTS_CLK_BUFFER_LIST) [lreplace $::env(CTS_CLK_BUFFER_LIST) 0 0]
+
+- To check the current value of CTS_CLK_BUFFER_LIST
+
+echo $::env(CTS_CLK_BUFFER_LIST)
+
+- To check the current value of CURRENT_DEF
+
+echo $::env(CURRENT_DEF)
+
+To set def as placement def
+
+set ::env(CURRENT_DEF) /openLANE_flow/designs/picorv32a/runs/02-04_05-27/results/placement/picorv32a.placement.def
+
+To run cts
+
+run_cts
+
+To check the current value of CTS_CLK_BUFFER_LIST
+
+echo $::env(CTS_CLK_BUFFER_LIST)
+
+* Lab steps to observe impact of bigger CTS buffers on setup and hold timing
+Now we will follow the same commands we have used earlier to run OPENROAD,
+
+openroad
+
+read_lef /openLANE_flow/designs/picorv32a/runs/02-04_05-27/tmp/merged.lef
+
+read_def /openLANE_flow/designs/picorv32a/runs/02-04_05-27/results/cts/picorv32a.cts.def
+
+write_db pico_cts1.db
+
+read_db pico_cts.db
+
+read_verilog /openLANE_flow/designs/picorv32a/runs/02-04_05-27/results/synthesis/picorv32a.synthesis_cts.v
+
+read_liberty $::env(LIB_SYNTH_COMPLETE)
+
+link_design picorv32a
+
+read_sdc /openLANE_flow/designs/picorv32a/src/my_base.sdc
+
+set_propagated_clock [all_clocks]
+
+report_checks -path_delay min_max -fields {slew trans net cap input_pins} -format full_clock_expanded -digits 4
+
+report_clock_skew -hold
+
+report_clock_skew -setup
+
+exit
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/dd53e2c5-7260-47e5-a28d-54918542209d" />
+
+### DAY 5: Final steps for RTL to GDS using Triton Route and OpenSTA
 Lee's algorithm is used for routing. Routing is the physical connection between the components. It is the first algorithm for routing and uses the grid. It workds by finding the vertical and horizontal grid of source and label adjacent grid with the next integer. It continues till it reach the target point.it finds the shortest path and avoids the zig zags. It limitation is it consumes more power and memory. 
 
 <img width="1114" height="912" alt="Screenshot 2025-11-11 065759" src="https://github.com/user-attachments/assets/c1af0197-6c34-4156-93ce-41996639ebe1" />
@@ -471,6 +951,50 @@ DRC violation occurs if there is any short. So to avoid this different metal lay
 <img width="535" height="429" alt="Screenshot 2025-11-11 070647" src="https://github.com/user-attachments/assets/e00e6c14-a140-4cbc-b658-28b9f255ee95" />
 <img width="447" height="378" alt="Screenshot 2025-11-11 070905" src="https://github.com/user-attachments/assets/8c6c0f8a-3b28-4f1e-abae-c96e4b01a481" />
 <img width="393" height="304" alt="Screenshot 2025-11-11 070945" src="https://github.com/user-attachments/assets/e28d0adc-e200-4b1f-b00d-0f2ce0a276d0" />
+
+* Lab steps to build power distribution network
+
+docker
+
+./flow.tcl -interactive
+
+package require openlane 0.9
+
+prep -design picorv32a -tag 30-03)20-42
+
+echo $::env(CURRENT_DEF)
+
+So, till here we have done CTS and now we are going to do the routing. but before routing we have to generate the PDN(power distribution network)file by using the command.
+
+gen_pdn
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cd7fde3e-e5df-4002-8666-b674313895d1" />
+It seems like the net VGND displays the total number of nodes on the grid matrix, indicating that it has been successfully created.
+
+The chip receives power from the VDD and GND pads, which then travels through the tracks and ultimately reaches the cells to power them.
+
+* Lab steps from power straps to std cell power
+<img width="837" height="537" alt="image" src="https://github.com/user-attachments/assets/c4a4e8f9-58a0-4983-ad4f-a8e82c958799" />
+Here green color is representing the chip, and yellow, red and blue boxes are the I/O pins,power and ground pads respectively.
+
+Power is transfered to the rings from the pads through the black dots shown in the image on the cross section points of the ring and pads.
+
+We have vertical and horizontal tracks which ensures that the power is being transfered from the ring to chip this is shown by the red and blue color. This is how power planing works in physical design of any device.
+
+Basics of global and detail routing and configure TritonRoute
+The final step of physical design is Routing.
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/57d84543-000c-47dd-a047-a4fcdad71f96" />
+The usage of the def command in the image above is to indicate that the latest completed step was the generation of PDN.
+
+The resulting file 17-pdn.def contains the information from cts.def as well as the power distribution network. By executing specific commands, we can determine the type of global and detailed routing that will be performed.
+
+Routing process is done by using the command
+
+run_routing
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9ccbd965-1275-4f90-9218-4c2b95f4613d" />
+
+Final generated layout is: 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/126607f5-a2d2-49fc-ab4f-1eb0fcd19fba" />
 
 * Triton Route feature: It performs the initial detail route. 
 - Honors pre-processed route guides (obtained after fast route) i.e attempts attempts as much as possible to route within route guides. Assume each guides for each net satisfy the inter guide connectivity. It works on proposed MILP based panel routing scheme with intra layer parallel and inter layer sequential routing framework.
@@ -509,7 +1033,5 @@ Access point cluster (APC):- A union of all access points derived from same lowe
 
 Routing topology algorithm and final files list post-route. The algorithm requires the determination of the cost associated with each APC and the calculation of the minimum spanning tree between the APCs to find the optimal points between two APCs. The next step involves post-routing STA analysis, which requires the extraction of parasitic effects (SPEF).Since OpenLANE does not have a SPEF extraction tool, this process needs to be done outside of OpenLANE. he resulting .spef file can be located in the routing folder under the results folder. This is the final generated layout.
 <img width="564" height="291" alt="Screenshot 2025-11-11 075108" src="https://github.com/user-attachments/assets/fa126a8f-becb-4f02-873a-f80978622003" />
-
-
 ### Acknowledgement
 I'm very thankful to VSD team for their RISC-V tapeout program.
