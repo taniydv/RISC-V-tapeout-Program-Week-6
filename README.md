@@ -2,7 +2,9 @@
 Lets's Forwarding to the RISC-V , Week 6 is the Physical design workshop where we learn the interactive flow from RTL to GDS.
 
 ### VDI IMAGE
-Firstly download th zipped file of openlane : https://vsd-labs.sgpl.cdn.digitaloceanspaces.com/vsd-labs/openlane.zip
+Firstly download th zipped file of openlane : 
+
+https://vsdlabs.sgpl.cdn.digitaloceanspaces.com/vsd-labs/openlane.zip
 
 Now to open an VDI image use an oracle virtualbox and create a new machine with name vsdworkshop.
 
@@ -126,21 +128,53 @@ We took a preventive approach by adding a fake Antenna diode next to every cell 
 * OpenLANE Directory Structure
 Open the OpenLANE and open the working directory: 
 
-  /Desktop/work/tools/openlane_working_dir/openlane
+<img width="880" height="777" alt="unnamed" src="https://github.com/user-attachments/assets/f9f62bc9-26f8-4dcc-91f2-cdaf5d3caac5" />
 
-  docker
+  * /Desktop/work/tools/openlane_working_dir/openlane
 
-  ./flow.tcl -interactive : This command is used to run the complete flow of RTL to GDS step by step.
+  * docker
+
+  * ./flow.tcl -interactive : This command is used to run the complete flow of RTL to GDS step by step.
 
   This opens the prompt of openlane. Now we have to input all the packages which required to run the flow.
 
-  package require openlane 0.9
+  * package require openlane 0.9
+<img width="733" height="763" alt="unnamed" src="https://github.com/user-attachments/assets/b9624d17-084a-4c50-8fc8-d5eccc9566f2" />
 
-  prep -design picorv32a : This command is used to prepare the design stage.
+  * prep -design picorv32a : This command is used to prepare the design stage.
 
-  This preparation stage created the runs folder in the picorv32a. This command also contain the config.tcl file which contain the all the defaults value. Design folder in the openlane directory also contains the config.tcl, src where we find the verilog file and sdc file. This config.tcl contains the every details about the design like the clock period, clock period port etc.
+<img width="1644" height="778" alt="unnamed" src="https://github.com/user-attachments/assets/d0c67e8f-5b8e-4b72-a0b2-74094f08672e" />
+
+This preparation stage created the runs folder in the picorv32a. This command also contain the config.tcl file which contain the all the defaults value. Design folder in the openlane directory also contains the config.tcl, src where we find the verilog file and sdc file. This config.tcl contains the every details about the design like the clock period, clock period port etc.
 
 In openlane default value is fixed, then in the config.tcl and then in sky130_fd_hd_config.tcl. Highest priority is gien to sky130 config.tcl file
+<img width="1009" height="370" alt="unnamed" src="https://github.com/user-attachments/assets/77237056-8977-4981-9f2e-4a2e9b18ab81" />
+<img width="648" height="191" alt="unnamed" src="https://github.com/user-attachments/assets/2b0b7596-4718-4d31-9573-1489fc62a9cb" />
 
-  
-  
+Merged.lib file contains all the information of cell lib and tech lib.
+
+<img width="711" height="816" alt="unnamed" src="https://github.com/user-attachments/assets/afcb3ed3-962c-4fb3-bbac-87c1ced587e1" />
+
+<img width="1075" height="797" alt="unnamed" src="https://github.com/user-attachments/assets/73dfab40-f5e7-4f48-9564-6691a8b3a90f" />
+
+After the prepapration step and the reviews of the file generated now go for the synthesis step.
+
+  * Synthesis: run_synthesis
+<img width="1814" height="818" alt="unnamed" src="https://github.com/user-attachments/assets/5dc6bf31-5bac-4989-b017-fd56bdbcbb01" />
+<img width="692" height="817" alt="unnamed" src="https://github.com/user-attachments/assets/9ab2d325-4666-4286-b1bb-d0418a9538e6" />
+<img width="609" height="645" alt="unnamed" src="https://github.com/user-attachments/assets/8b6a779c-5ed7-47eb-bd29-6104fd891caf" />
+
+Flop ratio is calculated as: Number of D flip flop/ Total number of cells
+
+Here number of D flip flops are : 1613 and total number of cells are : 14876 so the flop ratio is : 10.84%
+
+The synthesized file created is : 
+<img width="1857" height="816" alt="unnamed" src="https://github.com/user-attachments/assets/b321f2aa-eddd-40db-a9bb-0b298ae202d2" />
+
+We can also check the timing report which will be present in reports directory of picorv32a folder named as 1-yosys_4.stat.rpt and also the opensta timing report.
+<img width="479" height="806" alt="unnamed" src="https://github.com/user-attachments/assets/abcb607e-0498-45a1-8acd-79613f35517b" />
+
+<img width="721" height="818" alt="unnamed" src="https://github.com/user-attachments/assets/a76e803f-f585-4cf0-b6fc-df11ac571423" />
+
+### DAY 2: Good floorplan and Bad floorplan and Introduction to Library cell
+
